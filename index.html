@@ -1,0 +1,87 @@
+<body>
+  <script>
+  
+          document.addEventListener("DOMContentLoaded", function() {
+
+document.body.style.backgroundColor = 'black';
+
+var numCircles = 100;
+var circleSize = 10;
+var circleSpacing = circleSize * 2;
+var numRows = Math.ceil(window.innerHeight / circleSpacing);
+var numCols = Math.ceil(window.innerWidth / circleSpacing);
+for (var row = 0; row < numRows; row++) {
+  for (var col = 0; col < numCols; col++) {
+    var circle = document.createElement('div');
+    circle.style.position = 'absolute';
+    circle.style.top = row * circleSpacing + 'px';
+    circle.style.left = col * circleSpacing + 'px';
+    circle.style.width = circleSize + 'px';
+    circle.style.height = circleSize + 'px';
+    circle.style.borderRadius = '50%';
+    circle.style.backgroundColor = 'white';
+    document.body.appendChild(circle);
+  }
+}
+
+var circles = document.getElementsByTagName('div');
+var numCircles = circles.length;
+var circleSize = 10;
+var circleSpacing = circleSize * 2;
+var numRows = Math.ceil(window.innerHeight / circleSpacing);
+var numCols = Math.ceil(window.innerWidth / circleSpacing);
+var centerRow = Math.floor(numRows / 2);
+var centerCol = Math.floor(numCols / 2);
+var centerCircle = centerRow * numCols + centerCol;
+var rippleSpeed = 0.01;
+var rippleSize = circleSize * 2;
+var rippleGrowth = rippleSize / (numRows + numCols);
+var rippleTime = 0;
+var rippleDirection = 1;
+var centerRowSpeed = 0.1;
+var centerColSpeed = 0.1;
+function ripple() {
+  rippleTime += rippleDirection * rippleSpeed;
+  if (rippleTime > 1) {
+    rippleTime = 1;
+    rippleDirection = -1;
+  } else if (rippleTime < 0) {
+    rippleTime = 0;
+    rippleDirection = 1;
+  }
+  centerRow += centerRowSpeed;
+  centerCol += centerColSpeed;
+  if (centerRow < 0) {
+    centerRow = 0;
+    centerRowSpeed = -centerRowSpeed;
+  } else if (centerRow > numRows - 1) {
+    centerRow = numRows - 1;
+    centerRowSpeed = -centerRowSpeed;
+  }
+  if (centerCol < 0) {
+    centerCol = 0;
+    centerColSpeed = -centerColSpeed;
+  } else if (centerCol > numCols - 1) {
+    centerCol = numCols - 1;
+    centerColSpeed = -centerColSpeed;
+  }
+  for (var i = 0; i < numCircles; i++) {
+    var circle = circles[i];
+    var row = Math.floor(i / numCols);
+    var col = i % numCols;
+    var distance = Math.abs(row - centerRow) + Math.abs(col - centerCol);
+    var maxDistance = Math.max(Math.abs(row - centerRow), Math.abs(col - centerCol));
+    var size = circleSize + rippleSize * (1 - rippleTime) * (1 - distance / (numRows + numCols));
+    circle.style.width = size + 'px';
+    circle.style.height = size + 'px';
+    circle.style.top = (row * circleSpacing + circleSpacing / 2 - size / 2) + 'px';
+    circle.style.left = (col * circleSpacing + circleSpacing / 2 - size / 2) + 'px';
+    var color = Math.floor(255 * (1 - distance / (numRows + numCols)));
+    circle.style.backgroundColor = 'rgb(0,0,' + color + ')';
+  }
+  requestAnimationFrame(ripple);
+}
+ripple();
+});
+  </script>
+</body>
